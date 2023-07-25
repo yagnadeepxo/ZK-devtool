@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Circom Compiler</title>
+</head>
+
+<body>
+
+  <textarea id="circom-code"></textarea>
+  
+  <button id="compile-button">Compile</button>
+
+  <script>
+    const codeArea = document.getElementById('circom-code');
+    const compileBtn = document.getElementById('compile-button');
+
+    compileBtn.addEventListener('click', () => {
+      const code = codeArea.value;
+
+      fetch('/', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code })  
+      })
+      .then(res => {
+        if (res.ok) {
+          return res.text();  
+        } else {
+          throw new Error('Compilation failed');
+        }
+      })
+      .then(message => {
+        alert(message);
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Compilation failed');  
+      });
+
+    });
+  </script>
+
+</body>
+</html>
