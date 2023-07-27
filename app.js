@@ -21,10 +21,10 @@ app.post('/', (req, res) => {
   exec(compileCmd, (error, stdout, stderr) => {
     if (error) {
       console.error(`Compilation error: ${error}`);  
-      return res.status(500).send('Compilation failed');
+      return res.send(stderr);
     }
-    console.log(`Compilation succeeded`);
-    res.send('Compilation successful!');
+    console.log(stdout);
+    res.send(stdout);
   });
 
 });
