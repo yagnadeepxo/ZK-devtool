@@ -1,142 +1,116 @@
-
+<!DOCTYPE html>
 <html>
-
 <head>
-  <title>Yagnadeep Reddy - Resume</title>
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
-
-    body {
-  background-color: #F0E9D2;
-  color: #222;
-  font-family: 'VT323', monospace;
-  text-align: center;
-}
-
-h1, h2 {
-  font-size: 28px;
-  text-align: center;
-  text-shadow: 2px 2px 0px #CD5C5C;
-}
-
-h1 {
-  color: #CD5C5C;
-}
-
-h2 {
-  color: #444;  
-}
-
-h3 {
-  font-size: 18px;
-  text-decoration: underline;
-}
-
-p {
-  font-size: 14px;
-  line-height: 1.6;  
-}
-
-a {
-  color: #CD5C5C;
-}
-
-.neon {
-  font-size: 40px;
-  color: #FFF;  
-  text-shadow:
-    2px 2px 0 #444,
-    4px 4px 0 #555;  
-}
-
-    
-  </style>
-
+  <title>Circom Compiler</title>
 </head>
 
 <body>
 
-  <h1>Yagnadeep Reddy</h1>
-
-  <h2>Contact Info</h2>
-
-  <p>
-    Email: <a href="mailto:yagnadeep.reddy13@gmail.com">yagnadeep.reddy13@gmail.com</a><br>
-    Mobile: +91-939-0364-565<br>
-    Github: <a href="https://github.com/yagnadeepxo" target="_blank">github.com/yagnadeepxo</a>
-  </p>
-
-  <h2>Education</h2>
-
-  <p>
-    BE - Computer Science Engineering<br>
-    DayanandaSagar College of Engineering<br>
-    Bangalore, India<br>
-    GPA: 8.7<br>
-    Dec 2020 - July 2024
-  </p>
-
-  <h2>Skills</h2>
-
-  <p>
-    <span style="color:#f60;">Languages</span>: C, JavaScript, SQL, Bash, JAVA, Rust, Solidity, Circom<br>
-    <span style="color:#f60;">Frameworks</span>: ReactJS, NextJS, SnarkJS, NodeJS<br>
-    <span style="color:#f60;">Tools</span>: Docker, GIT, MySQL, MongoDB<br>
-    <span style="color:#f60;">Platforms</span>: Linux, Web, Windows, AWS
-  </p>
-
-  <h2>Experience</h2>
-
-  <h3>Blockchain Engineer Intern - NetObjex</h3>
-  <p>Mar 2023 - May 2023</p>
+  <textarea id="circom-code"></textarea>
   
-  <p>
-    ◦ <b>NFT:</b>NFT:</span> Collaborated with metaverse team to build and deploy NFT<br>
-    ◦ <b>Onchain Privacy Research:</b>Worked with Circom, SnarkJS<br>
-    ◦ <b>Authentication:</b>Built social sign-in and web3 login with MetaMask and walletConnect
-  </p>
+  <button id="compile-button">Compile</button>
 
-  <h3>Hybrid Finanace</h3>
-  <p>Blockchain Developer, Nov 2022 - Dec 2022</p>
-  
-  <p>
-    ◦ <b>API Integration</b>: Worked with Web3 API’s (Tatum) and build web hooks<br>
-    ◦ <b>IPFS</b>: Built a feature to upload image and resize it to store in IPFS..<br>
-    ◦ <b>DevOps</b>: Managed Bitcoin core node on Cloud
-  </p>
+  <label for="in1">Input 1:</label>
+  <input type="text" id="in1">
 
-  <h2>Projects</h2>
+  <label for="in2">Input 2:</label> 
+  <input type="text" id="in2">
 
-<h4 style="color: #f60;">ZK-Pharma</h3>  
-<p>Zero Knowledge Drug verification system - Research oriented, open source system that allows drug designers to input components and generate proofs to verify drug safety anonymously. Developed with Circom, NodeJS, SnarkJS, NextJS.</p>
+  <button onclick="generateWitness()">Generate witness</button><br><br>
 
-<h4 style="color: #f60;">Centralized Crypto Exchange</h3>
-<p>Cryptocurrency exchange platform using Node.js, MySQL, HTML and JavaScript. Implemented live pricing data, buying/selling, and secure user registration. Focused on usability and intuitive design.</p>
+  <button onclick="zkey()">proving key</button><br><br>
 
-<h4 style="color: #f60;">Proof of Work Consensus</h3>
-<p>Implemented Proof of Work consensus algorithm used in distributed systems like Bitcoin. Developed blockchain data structure in Java.</p>
+  <button onclick="vkey()">verification key</button><br><br>
 
-<h4 style="color: #f60;">Anonymix</h3>
-<p>Decentralized, non-custodial cryptocurrency mixer utilizing zkSNARK for enhanced transaction privacy. Developed on Ethereum with Solidity, JavaScript, and Circom.</p>
+  <button onclick="proof()">generate proof</button><br><br>
 
-  <h2>Certifications</h2>
+  <button onclick="verify()">verify proof</button>
 
-  <p>
-    - <span style="color:#f60;">Introduction to Blockchain and Bitcoin: </span>Buffallo University: coursera<br><br>
-    - <span style="color:#f60;">Ethereum and Solidity Developer: </span>Udemy
-  </p>
+  <p id="result"></p>
 
-  <h2>Volunteer Experience</h2>
+  <script>
+    const codeArea = document.getElementById('circom-code');
+    const compileBtn = document.getElementById('compile-button');
 
-<p>
-  - <span style="color:#f60;">Co-founder of Brainheads</span>: Unique NFT collection Launched on Solana during solana Hacker House 2022<br>
-  -  Technical Lead, Collaborated with designers to make the project succesful.<br><br>
-  - <span style="color:#f60;">Blockchain Cohort Organizer</span>: Organized a cohort on blockchain and Decentralized Finance<br><br>
-  -  Topics include Bitcoin, Ethereum, Cosmos, De-Fi, Multichain, Wrapped Assets.<br><br>
-  -  Lead speaker and delivered quality content with positive feedback from the attendees  
-</p>
+    compileBtn.addEventListener('click', () => {
+      const code = codeArea.value;
+
+      fetch('/compile', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code })  
+      })
+      .then(res => {
+        if (res.ok) {
+          return res.text();  
+        } else {
+          throw new Error('Compilation failed');
+        }
+      })
+      .then(message => {
+        alert(message);
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Compilation failed');  
+      });
+
+    });
+
+    async function generateWitness() {
+      const resp = await fetch('/generateWitness', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const { result } = await resp.json();
+      document.getElementById('result').textContent = result;
+    }
+
+    async function zkey(){
+      const resp = await fetch('/pk/groth16', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+
+    async function vkey(){
+      const resp = await fetch('/vk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    }
+
+    async function proof(){
+      const resp = await fetch('/proof/groth16', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const { result } = await resp.json();
+      console.log(result);
+    }
+
+    async function verify(){
+      const resp = await fetch('/verify/groth16',{
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });  
+      const { result } = await resp.json();
+      console.log(result);
+    }
+
+  </script>
 
 </body>
-
 </html>
